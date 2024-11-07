@@ -15,6 +15,7 @@ struct TreeItem
     virtual qint16 code()=0;
     virtual qint16 countryCode()=0;
     virtual QString displayName()=0;
+    // virtual QFont displayFont()=0;
     virtual const QImage& decoration();
 };
 
@@ -29,9 +30,7 @@ struct Oper: public TreeItem
     // TreeItem interface
 public:
     qint16 code() override;
-
     qint16 countryCode() override;
-
     QString displayName() override;
 };
 
@@ -42,14 +41,10 @@ struct Country: public TreeItem
     QString iso2;
     QString name;
 
-    bool operator <(const Country& other);
-
     // TreeItem interface
 public:
     qint16 code() override;
-
     qint16 countryCode() override;
-
     QString displayName() override;
 };
 

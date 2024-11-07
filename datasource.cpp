@@ -2,7 +2,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QDebug>
+#include <QVariant>
 
 DataSource::DataSource() {}
 
@@ -81,11 +81,6 @@ QString Oper::displayName()
 
 const QString Country::pattern("%1 (%2)");
 
-bool Country::operator <(const Country &other)
-{
-    return code_<other.code_;
-}
-
 qint16 Country::code()
 {
     return code_;
@@ -117,11 +112,8 @@ bool SqlDataSource::aquireData()
 
     if(!db.open())
     {
-        qDebug()<<"DB failed "<<db.lastError();
         return false;
     }
-
-    // QSqlQuery query("SELECT mcc, code,name as country_name  FROM countries");
 
     QSqlQuery query("SELECT countries.mcc as mcc, countries.code as country_code, countries.mnc_length as mnc_length,"
                     "countries.name as country_name, operators.mnc as mnc, operators.name as operator_name "
@@ -132,8 +124,8 @@ bool SqlDataSource::aquireData()
     {
         Country* cElement=nullptr;
 
-        static const QString c_icon_pattern(":/icons/countries/icons/Countries/%1.png");
-        static const QString o_icon_pattern(":/icons/operators/icons/Operators/%1_%2.png");
+        static const QString c_icon_pattern(":/icons/Countries/%1.png");
+        static const QString o_icon_pattern(":/icons/Operators/%1_%2.png");
 
         while (query.next()) {
             qint16 mcc=query.value("mcc").toInt();

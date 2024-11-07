@@ -1,10 +1,11 @@
 #include "opertreemodel.h"
 #include "datasource.h"
+#include <QFont>
 
 OperTreeModel::OperTreeModel(QObject *parent)
     : QAbstractItemModel{parent}
 {
-    treeData=new SqlDataSource("/home/slava/Projects/OzzyLogik/ProvidersTree/OMsystem.db");
+    treeData=new SqlDataSource("OMsystem.db");
     treeData->aquireData();
 }
 
@@ -83,6 +84,14 @@ QVariant OperTreeModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
     {
         return item->decoration();
+    }
+    case Qt::FontRole:
+    {
+        QFont f;
+        if(!index.parent().isValid())//countries
+            f.setBold(true);
+
+        return f;
     }
     default:
         return QVariant();

@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons/countries">
+    <qresource prefix="/">
         <file>icons/Countries/ZW.png</file>
         <file>icons/Countries/ZM.png</file>
         <file>icons/Countries/ZA.png</file>
@@ -230,8 +230,6 @@
         <file>icons/Countries/AF.png</file>
         <file>icons/Countries/AE.png</file>
         <file>icons/Countries/AD.png</file>
-    </qresource>
-    <qresource prefix="/icons/operators">
         <file>icons/Operators/740_1.png</file>
         <file>icons/Operators/740_0.png</file>
         <file>icons/Operators/734_6.png</file>
@@ -947,8 +945,5 @@
         <file>icons/Operators/202_5.png</file>
         <file>icons/Operators/202_10.png</file>
         <file>icons/Operators/202_1.png</file>
-    </qresource>
-    <qresource prefix="/db">
-        <file>OMsystem.db</file>
     </qresource>
 </RCC>
