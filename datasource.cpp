@@ -115,44 +115,44 @@ bool SqlDataSource::aquireData()
         return false;
     }
 
-    QSqlQuery query("SELECT countries.mcc as mcc, countries.code as country_code, countries.mnc_length as mnc_length,"
+    QSqlQuery query("SELECT countries.mcc as mcc, countries.code as country_code, "
                     "countries.name as country_name, operators.mnc as mnc, operators.name as operator_name "
                     "FROM countries INNER join operators on countries.mcc=operators.mcc "
                     "ORDER by country_code");
 
-    if (query.exec())
-    {
-        Country* cElement=nullptr;
-
-        static const QString c_icon_pattern(":/icons/Countries/%1.png");
-        static const QString o_icon_pattern(":/icons/Operators/%1_%2.png");
-
-        while (query.next()) {
-            qint16 mcc=query.value("mcc").toInt();
-            if(!(cElement && cElement->code_==mcc))
-            {
-                cElement=new Country;
-                cElement->parent=nullptr;
-                cElement->code_=mcc;
-                cElement->iso2=query.value("country_code").toString();
-                cElement->name=query.value("country_name").toString();
-                cElement->decoration_=QImage(c_icon_pattern.arg(cElement->iso2));
-
-                countries.push_back(cElement);
-            }
-
-            Oper* oElement=new Oper;
-            oElement->parent=cElement;
-            oElement->code_=query.value("mnc").toInt();
-            oElement->country_code=cElement->code_;
-            oElement->name=query.value("operator_name").toString();
-            oElement->decoration_=QImage(o_icon_pattern.arg(cElement->code_).arg(oElement->code_));
-
-            cElement->children.push_back(oElement);
-        }
-    }
-    else
+    if (!query.exec())
         return false;
+
+    Country* cElement=nullptr;
+
+    static const QString c_icon_pattern(":/icons/Countries/%1.png");
+    static const QString o_icon_pattern(":/icons/Operators/%1_%2.png");
+
+    while (query.next()) {
+        QString country_code=query.value("country_code").toString().toUpper();
+        if(!(cElement && cElement->iso2==country_code))
+        {
+            cElement=new Country;
+            cElement->parent=nullptr;
+            cElement->code_=query.value("mcc").toInt();
+            cElement->iso2=country_code;
+            cElement->name=query.value("country_name").toString();
+            cElement->decoration_=QImage(c_icon_pattern.arg(cElement->iso2));
+
+            countries.push_back(cElement);
+        }
+
+        Oper* oElement=new Oper;
+        oElement->parent=cElement;
+        oElement->code_=query.value("mnc").toInt();
+        oElement->country_code=cElement->code_;
+        oElement->name=query.value("operator_name").toString();
+        oElement->decoration_=QImage(o_icon_pattern.arg(cElement->code_).arg(oElement->code_));
+
+        cElement->children.push_back(oElement);
+    }
+
+    db.close();
 
     return true;
 }
