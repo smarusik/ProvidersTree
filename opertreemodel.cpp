@@ -5,7 +5,7 @@
 OperTreeModel::OperTreeModel(QObject *parent)
     : QAbstractItemModel{parent}
 {
-    treeData=new SqlDataSource("OMsystem.db");
+    treeData=new SqlDataSource("system.db");
     treeData->aquireData();
 }
 
