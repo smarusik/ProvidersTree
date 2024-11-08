@@ -1,6 +1,7 @@
 #ifndef DATASOURCE_H
 #define DATASOURCE_H
 
+#include <memory>
 #include <deque>
 #include <QString>
 #include <QImage>
@@ -8,14 +9,13 @@
 struct TreeItem
 {
     TreeItem *parent;
-    std::deque<TreeItem*> children;
+    std::deque<std::unique_ptr<TreeItem>> children;
     QImage decoration_;
 
     int countChildren();
     virtual qint16 code()=0;
     virtual qint16 countryCode()=0;
     virtual QString displayName()=0;
-    // virtual QFont displayFont()=0;
     virtual const QImage& decoration();
 };
 
@@ -51,7 +51,7 @@ public:
 class DataSource
 {
 protected:
-    std::deque<TreeItem*> countries;
+    std::deque<std::unique_ptr<TreeItem>> countries;
 
 public:
     DataSource();

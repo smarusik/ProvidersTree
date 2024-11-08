@@ -13,7 +13,7 @@ TreeItem *DataSource::countryForRowColumn(int row, int column)
 
     if(row < countries.size())
     {
-        return countries.at(row);
+        return countries.at(row).get();
     }
 
     return nullptr;
@@ -28,7 +28,7 @@ TreeItem *DataSource::operForRowColumn(int row, int column, int countryRow)
 
     if(country && country->children.size()>row)
     {
-        return country->children.at(row);
+        return country->children.at(row).get();
     }
 
     return nullptr;
@@ -37,7 +37,7 @@ TreeItem *DataSource::operForRowColumn(int row, int column, int countryRow)
 int DataSource::rowForCountry(qint16 code)
 {
     auto it=std::find_if(countries.begin(), countries.end(),
-                           [=](TreeItem* elem){
+                           [=](const std::unique_ptr<TreeItem>& elem){
                                return elem->code()==code;
     });
 
@@ -139,7 +139,7 @@ bool SqlDataSource::aquireData()
             cElement->name=query.value("country_name").toString();
             cElement->decoration_=QImage(c_icon_pattern.arg(cElement->iso2));
 
-            countries.push_back(cElement);
+            countries.emplace_back(cElement);
         }
 
         Oper* oElement=new Oper;
@@ -149,7 +149,7 @@ bool SqlDataSource::aquireData()
         oElement->name=query.value("operator_name").toString();
         oElement->decoration_=QImage(o_icon_pattern.arg(cElement->code_).arg(oElement->code_));
 
-        cElement->children.push_back(oElement);
+        cElement->children.emplace_back(oElement);
     }
 
     db.close();
